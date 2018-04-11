@@ -17,7 +17,6 @@ export class TextMark {
     t.setupSelection()
   }
 
-
   /**
    * This function removes punctuation switches all characters to lower case
    * so that it can be used as a class name.
@@ -59,28 +58,26 @@ export class TextMark {
   /**
    * Register a callback function that is called if a word has been marked.
    */
-  setClickCallback (clickCallback) {
-    var t = this
-    t.clickCallback = clickCallback
-    return t
+  addCallback (addCallback) {
+    this.addCallback = addCallback
+    return this
+  }
+
+  removeCallback (removeCallback) {
+    this.removeCallback = removeCallback
+    return this
   }
 
   addClassToElement (element, addClass) {
-    var t = this
     element.classList.add(addClass)
-    if (t.clickCallback !== undefined) t.clickCallback(element)
   }
 
   removeClassFromElement (element, removeClass) {
-    var t = this
     element.classList.remove(removeClass)
-    if (t.clickCallback !== undefined) t.clickCallback(element)
   }
 
   toggleClassElement (element, toggleClass) {
-    var t = this
-    element.classList.toggle(toggleClass)
-    if (t.clickCallback !== undefined) t.clickCallback(element)
+    return element.classList.toggle(toggleClass)
   }
 
   addClassToClass (className, addClass) {
@@ -88,6 +85,9 @@ export class TextMark {
     let elements = t.element.getElementsByClassName(className)
     for (let i = 0; i < elements.length; ++i) {
       t.addClassToElement(elements[i], addClass)
+    }
+    if (elements.length > 0 && t.addCallback !== undefined) {
+      t.addCallback(elements[0])
     }
   }
 
@@ -102,8 +102,12 @@ export class TextMark {
   toggleClass (className, toggleClass) {
     var t = this
     let elements = t.element.getElementsByClassName(className)
+    let added = false
     for (let i = 0; i < elements.length; ++i) {
-      t.toggleClassElement(elements[i], toggleClass)
+      added = t.toggleClassElement(elements[i], toggleClass)
+    }
+    if (elements.length > 0 && added && t.addCallback !== undefined) {
+      t.addCallback(elements[0])
     }
   }
 
