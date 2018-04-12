@@ -63,6 +63,9 @@ export class TextMark {
     return this
   }
 
+  /**
+   * Register a callback function that is called if a word has been removed.
+   */
   removeCallback (removeCallback) {
     this.removeCallback = removeCallback
     return this
@@ -111,6 +114,9 @@ export class TextMark {
     }
     if (elements.length > 0 && added && t.addCallback !== undefined) {
       t.addCallback(elements[0])
+    } else if (elements.length > 0 && !added &&
+        t.removeCallback !== undefined) {
+      t.removeCallback(elements[0])
     }
   }
 
