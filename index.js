@@ -1,3 +1,5 @@
+import {stopwords} from './stopwords.js'
+
 /**
  * Dynamically mark words in a text.
  */
@@ -8,10 +10,15 @@ export class TextMark {
     t.text = text
     t.terms = t.text.split(/(\s+)/)
     t.html = ''
+    var stopWordSet = new Set(stopwords)
     for (let i in t.terms) {
       let term = t.terms[i]
       let className = t.className(term)
-      t.html += '<span class="text ' + className + '">' + term + '</span> '
+      if (stopWordSet.has(className)) {
+        t.html += '<span class="text">' + term + '</span>'
+      } else {
+        t.html += '<span class="text ' + className + '">' + term + '</span> '
+      }
     }
     t.setupClick()
     t.setupSelection()
