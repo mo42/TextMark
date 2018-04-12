@@ -97,6 +97,9 @@ export class TextMark {
     for (let i = 0; i < elements.length; ++i) {
       t.removeClassFromElement(elements[i], removeClass)
     }
+    if (elements.length > 0 && t.removeCallback !== undefined) {
+      t.removeCallback(elements[0])
+    }
   }
 
   toggleClass (className, toggleClass) {
