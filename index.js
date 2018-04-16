@@ -22,6 +22,7 @@ export class TextMark {
     }
     t.setupClick()
     t.setupSelection()
+    t.defaultSelector = 'mark'
   }
 
   /**
@@ -37,7 +38,7 @@ export class TextMark {
     var click = function (event) {
       let text = event.explicitOriginalTarget.data
       text = t.className(text)
-      t.toggleClass(text, 'mark')
+      t.toggleClass(text, t.defaultSelector)
       if (t.clickCallback !== undefined) {
         t.clickCallback(text)
       }
@@ -55,11 +56,19 @@ export class TextMark {
       for (let i in selectionTerms) {
         let term = selectionTerms[i]
         let className = t.className(term)
-        t.addClassToClass(className, 'mark')
+        t.addClassToClass(className, t.defaultSelector)
       }
       selection.removeAllRanges()
     }
     t.element.addEventListener('mouseup', select, false)
+  }
+
+  /**
+   * Set a default class selector.
+   */
+  defaultSelector (defaultSelector) {
+    this.defaultSelector = defaultSelector
+    return this
   }
 
   /**
