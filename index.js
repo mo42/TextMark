@@ -4,10 +4,11 @@ import {stopwords} from './stopwords.js'
  * Dynamically mark words in a text.
  */
 export class TextMark {
-  constructor (element, text) {
+  constructor (element, text, textSelector) {
     var t = this
     t.element = element
     t.text = text
+    t.textSelector = textSelector || 'text'
     t.terms = t.text.split(/(\s+)/)
     t.html = ''
     var stopWordSet = new Set(stopwords)
@@ -17,13 +18,13 @@ export class TextMark {
       if (stopWordSet.has(className)) {
         t.html += '<span class="text">' + term + '</span>'
       } else {
-        t.html += '<span class="text ' + className + '">' + term + '</span> '
+        t.html += '<span class="' + t.textSelector + ' ' + className + '">' +
+          term + '</span> '
       }
     }
     t.setupClick()
     t.setupSelection()
     t.defaultSelector = 'mark'
-    t.textSelector = 'text'
   }
 
   /**
@@ -67,13 +68,8 @@ export class TextMark {
   /**
    * Set a default class selector.
    */
-  defaultSelector (defaultSelector) {
+  setDefaultSelector (defaultSelector) {
     this.defaultSelector = defaultSelector
-    return this
-  }
-
-  textSelector (textSelector) {
-    this.textSelector = textSelector
     return this
   }
 
