@@ -23,6 +23,7 @@ export class TextMark {
     t.setupClick()
     t.setupSelection()
     t.defaultSelector = 'mark'
+    t.textSelector = 'text'
   }
 
   /**
@@ -68,6 +69,11 @@ export class TextMark {
    */
   defaultSelector (defaultSelector) {
     this.defaultSelector = defaultSelector
+    return this
+  }
+
+  textSelector (textSelector) {
+    this.textSelector = textSelector
     return this
   }
 
