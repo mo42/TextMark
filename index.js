@@ -1,7 +1,10 @@
 import {stopwords} from './stopwords.js'
 
 /**
- * Dynamically mark words in a text.
+ * This class allows you to dynamically select words in text. The basic idea
+ * is that a text is divided into words and each word is provided with a class
+ * derived from the word itself. Additional classes can be assigned to these
+ * elements by function calls as well as left- and right-clicks.
  */
 export class TextMark {
   constructor (element, text, textSelector) {
@@ -22,9 +25,13 @@ export class TextMark {
           term + '</span> '
       }
     }
-    t.setupClick()
+    t.setupLeftClick()
+    t.setupRightClick()
     t.setupSelection()
-    t.defaultSelector = 'mark'
+    t.leftSelector = 'leftSelector'
+    t.rightSelector = 'rightSelector'
+    t.left = { add: undefined, remove: undefined }
+    t.right = { add: undefined, remove: undefined }
   }
 
   /**
@@ -35,17 +42,23 @@ export class TextMark {
     return term.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').toLowerCase()
   }
 
-  setupClick () {
+  setupLeftClick () {
     var t = this
     var click = function (event) {
-      let text = event.explicitOriginalTarget.data
-      text = t.className(text)
-      t.toggleClass(text, t.defaultSelector)
-      if (t.clickCallback !== undefined) {
-        t.clickCallback(text)
-      }
+      let text = t.className(event.explicitOriginalTarget.data)
+      t.toggleClass(text, t.leftSelector, t.left)
     }
     t.element.addEventListener('click', click, false)
+  }
+
+  setupRightClick () {
+    var t = this
+    var rightClick = function (event) {
+      event.preventDefault()
+      let text = t.className(event.explicitOriginalTarget.data)
+      t.toggleClass(text, t.rightSelector, t.right)
+    }
+    t.element.addEventListener('contextmenu', rightClick, false)
   }
 
   setupSelection () {
@@ -58,7 +71,7 @@ export class TextMark {
       for (let i in selectionTerms) {
         let term = selectionTerms[i]
         let className = t.className(term)
-        t.addClassToClass(className, t.defaultSelector)
+        t.addClass(className, t.leftSelector, t.left)
       }
       selection.removeAllRanges()
     }
@@ -66,26 +79,54 @@ export class TextMark {
   }
 
   /**
-   * Set a default class selector.
+   * Set the selector for the left-click or selection.
    */
-  setDefaultSelector (defaultSelector) {
-    this.defaultSelector = defaultSelector
+  setLeftSelector (leftSelector) {
+    this.leftSelector = leftSelector
     return this
   }
 
   /**
-   * Register a callback function that is called if a word has been marked.
+   * Set the selector for the right-click.
    */
-  addCallback (addCallback) {
-    this.addCallback = addCallback
+  setRightSelector (rightSelector) {
+    this.rightSelector = rightSelector
     return this
   }
 
   /**
-   * Register a callback function that is called if a word has been removed.
+   * Register a callback function that is invoked if a word has been added
+   * with a left-click.
    */
-  removeCallback (removeCallback) {
-    this.removeCallback = removeCallback
+  leftAddCallback (leftAddCallback) {
+    this.left.add = leftAddCallback
+    return this
+  }
+
+  /**
+   * Register a callback function that is invoked if a word has been removed
+   * with a left-click.
+   */
+  leftRemoveCallback (leftRemoveCallback) {
+    this.left.remove = leftRemoveCallback
+    return this
+  }
+
+  /**
+   * Register a callback function that is invoked if a word has been added
+   * with a right-click.
+   */
+  rightAddCallback (rightAddCallback) {
+    this.right.add = rightAddCallback
+    return this
+  }
+
+  /**
+   * Register a callback function that is invoked if a word has been removed
+   * with a right-click.
+   */
+  rightRemoveCallback (rightRemoveCallback) {
+    this.right.remove = rightRemoveCallback
     return this
   }
 
@@ -101,40 +142,56 @@ export class TextMark {
     return element.classList.toggle(toggleClass)
   }
 
-  addClassToClass (className, addClass) {
+  /**
+   * This function adds the class in addClass to all elements that have
+   * contain className. This function invokes the corresponding callback once.
+   */
+  addClass (className, addClass, callbacks) {
     var t = this
     let elements = t.element.getElementsByClassName(className)
     for (let i = 0; i < elements.length; ++i) {
       t.addClassToElement(elements[i], addClass)
     }
-    if (elements.length > 0 && t.addCallback !== undefined) {
-      t.addCallback(elements[0])
+    if (elements.length > 0 && callbacks.add !== undefined) {
+      callbacks.add(elements[0])
     }
   }
 
-  removeClass (className, removeClass) {
+  /**
+   * This function removes the class in removeClass from all elements that
+   * contain className. This function invokes the corresponding callback once.
+   */
+  removeClass (className, removeClass, callbacks) {
     var t = this
     let elements = t.element.getElementsByClassName(className)
     for (let i = 0; i < elements.length; ++i) {
       t.removeClassFromElement(elements[i], removeClass)
     }
-    if (elements.length > 0 && t.removeCallback !== undefined) {
-      t.removeCallback(elements[0])
+    if (elements.length > 0 && callbacks.remove !== undefined) {
+      callbacks.remove(elements[0])
     }
   }
 
-  toggleClass (className, toggleClass) {
-    var t = this
+  /**
+   * This function toggles the class from toggleClass in all elements with
+   * className. The third arguments should, if provided, contain two callback
+   * functions ('add' and 'remove') that are called once depending on the
+   * toggle result.
+   */
+  toggleClass (className, toggleClass, callbacks) {
+    let t = this
     let elements = t.element.getElementsByClassName(className)
     let added = false
     for (let i = 0; i < elements.length; ++i) {
       added = t.toggleClassElement(elements[i], toggleClass)
     }
-    if (elements.length > 0 && added && t.addCallback !== undefined) {
-      t.addCallback(elements[0])
-    } else if (elements.length > 0 && !added &&
-        t.removeCallback !== undefined) {
-      t.removeCallback(elements[0])
+    if (callbacks !== undefined) {
+      if (elements.length > 0 && added && callbacks.add !== undefined) {
+        callbacks.add(elements[0])
+      } else if (elements.length > 0 && !added &&
+          callbacks.remove !== undefined) {
+        callbacks.remove(elements[0])
+      }
     }
   }
 

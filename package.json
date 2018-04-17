@@ -1,6 +1,6 @@
 {
   "name": "textmark",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Dynamically highlight words in texts",
   "main": "index.js",
   "scripts": {
