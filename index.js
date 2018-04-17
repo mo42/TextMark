@@ -1,10 +1,10 @@
 import {stopwords} from './stopwords.js'
 
 /**
- * This class allows you to dynamically select words in text. The basic idea
+ * This class allows you to dynamically select words in a text. The basic idea
  * is that a text is divided into words and each word is provided with a class
- * derived from the word itself. Additional classes can be assigned to these
- * elements by function calls as well as left- and right-clicks.
+ * derived from the word itself. Clicking on words applies CSS to the class of
+ * the word and invokes callback functions.
  */
 export class TextMark {
   constructor (element, text, textSelector) {
