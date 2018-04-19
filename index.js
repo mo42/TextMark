@@ -95,7 +95,7 @@ export class TextMark {
   }
 
   /**
-   * Register a callback function that is invoked if a word has been added
+   * Register a callback function that is invoked when a word has been added
    * with a left-click.
    */
   leftAddCallback (leftAddCallback) {
@@ -104,7 +104,7 @@ export class TextMark {
   }
 
   /**
-   * Register a callback function that is invoked if a word has been removed
+   * Register a callback function that is invoked when a word has been removed
    * with a left-click.
    */
   leftRemoveCallback (leftRemoveCallback) {
@@ -113,7 +113,7 @@ export class TextMark {
   }
 
   /**
-   * Register a callback function that is invoked if a word has been added
+   * Register a callback function that is invoked when a word has been added
    * with a right-click.
    */
   rightAddCallback (rightAddCallback) {
@@ -122,7 +122,7 @@ export class TextMark {
   }
 
   /**
-   * Register a callback function that is invoked if a word has been removed
+   * Register a callback function that is invoked when a word has been removed
    * with a right-click.
    */
   rightRemoveCallback (rightRemoveCallback) {
