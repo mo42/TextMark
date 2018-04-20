@@ -152,8 +152,10 @@ export class TextMark {
     for (let i = 0; i < elements.length; ++i) {
       t.addClassToElement(elements[i], addClass)
     }
-    if (elements.length > 0 && callbacks.add !== undefined) {
-      callbacks.add(elements[0])
+    if (callbacks !== undefined) {
+      if (elements.length > 0 && callbacks.add !== undefined) {
+        callbacks.add(elements[0])
+      }
     }
   }
 
@@ -167,8 +169,10 @@ export class TextMark {
     for (let i = 0; i < elements.length; ++i) {
       t.removeClassFromElement(elements[i], removeClass)
     }
-    if (elements.length > 0 && callbacks.remove !== undefined) {
-      callbacks.remove(elements[0])
+    if (callbacks !== undefined) {
+      if (elements.length > 0 && callbacks.remove !== undefined) {
+        callbacks.remove(elements[0])
+      }
     }
   }
 
