@@ -199,8 +199,16 @@ export class TextMark {
     }
   }
 
-  clear () {
+  /**
+   * Remove a given selector from all elements. Without the selector all marks
+   * are removed.
+   */
+  clear (selector) {
     var t = this
-    t.element.innerHTML = t.html
+    if (selector !== undefined) {
+      t.removeClass('text', selector)
+    } else {
+      t.element.innerHTML = t.html
+    }
   }
 }
