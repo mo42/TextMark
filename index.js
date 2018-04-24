@@ -8,13 +8,13 @@ import {stopwords} from './stopwords.js'
  */
 export class TextMark {
   constructor (element, text, textSelector) {
-    var t = this
+    let t = this
     t.element = element
     t.text = text
     t.textSelector = textSelector || 'text'
     t.terms = t.text.split(/(\s+)/)
     t.html = ''
-    var stopWordSet = new Set(stopwords)
+    let stopWordSet = new Set(stopwords)
     for (let i in t.terms) {
       let term = t.terms[i]
       let className = t.className(term)
@@ -43,8 +43,8 @@ export class TextMark {
   }
 
   setupLeftClick () {
-    var t = this
-    var click = function (event) {
+    let t = this
+    let click = function (event) {
       let text = t.className(event.explicitOriginalTarget.data)
       t.toggleClass(text, t.leftSelector, t.left)
     }
@@ -52,8 +52,8 @@ export class TextMark {
   }
 
   setupRightClick () {
-    var t = this
-    var rightClick = function (event) {
+    let t = this
+    let rightClick = function (event) {
       event.preventDefault()
       let text = t.className(event.explicitOriginalTarget.data)
       t.toggleClass(text, t.rightSelector, t.right)
@@ -62,9 +62,9 @@ export class TextMark {
   }
 
   setupSelection () {
-    var t = this
+    let t = this
     t.element.innerHTML = t.html
-    var select = function () {
+    let select = function () {
       let selection = window.getSelection()
       let selectionString = selection.toString()
       let selectionTerms = selectionString.split(/(\s+)/)
@@ -147,7 +147,7 @@ export class TextMark {
    * contain className. This function invokes the corresponding callback once.
    */
   addClass (className, addClass, callbacks) {
-    var t = this
+    let t = this
     let elements = t.element.getElementsByClassName(className)
     for (let i = 0; i < elements.length; ++i) {
       t.addClassToElement(elements[i], addClass)
@@ -164,7 +164,7 @@ export class TextMark {
    * contain className. This function invokes the corresponding callback once.
    */
   removeClass (className, removeClass, callbacks) {
-    var t = this
+    let t = this
     let elements = t.element.getElementsByClassName(className)
     for (let i = 0; i < elements.length; ++i) {
       t.removeClassFromElement(elements[i], removeClass)
@@ -204,7 +204,7 @@ export class TextMark {
    * are removed.
    */
   clear (selector) {
-    var t = this
+    let t = this
     if (selector !== undefined) {
       t.removeClass('text', selector)
     } else {
