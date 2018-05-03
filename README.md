@@ -23,6 +23,6 @@ One can mark words manually too:
 textMark.addClass(someterm, 'mark')
 ```
 ## Demo
-![Demo](demo.gif){: .center-image }
+![Demo](demo.gif)
 ## Reference
 TODO
