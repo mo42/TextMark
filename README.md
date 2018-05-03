@@ -9,8 +9,7 @@ itself:
 ```javascript
 let textMark = new TextMark(textContainer, text)
 ```
-Then, one can define CSS selectors and callback functions:
-```
+Then, one can define CSS selectors and callback functions.
 Set a CSS selector that specifies how the element is marked
 ```javascript
 textMark.setLeftSelector('mark')
@@ -24,6 +23,6 @@ One can mark words manually too:
 textMark.addClass(someterm, 'mark')
 ```
 ## Demo
-![Demo](demo.gif)
+![Demo](demo.gif){: .center-image }
 ## Reference
 TODO
