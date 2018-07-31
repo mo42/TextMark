@@ -6,7 +6,7 @@ import {stopwords} from './stopwords.js'
  * derived from the word itself. Clicking on words applies CSS to the class of
  * the word and invokes callback functions.
  */
-export class TextMark {
+export default class TextMark {
   constructor (element, text, textSelector) {
     let t = this
     t.element = element
