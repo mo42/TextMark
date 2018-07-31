@@ -15,7 +15,7 @@ export default class TextMark {
     t.terms = t.text.split(/(\s+)/)
     t.html = ''
     let stopWordSet = new Set(stopwords)
-    for (let i in t.terms) {
+    for (let i = 0; i < t.terms.length; ++i) {
       let term = t.terms[i]
       let className = t.className(term)
       if (stopWordSet.has(className)) {
