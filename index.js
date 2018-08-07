@@ -6,7 +6,7 @@ import {stopwords} from './stopwords.js'
  * derived from the word itself. Clicking on words applies CSS to the class of
  * the word and invokes callback functions.
  */
-export class TextMark {
+export default class TextMark {
   constructor (element, text, textSelector) {
     let t = this
     t.element = element
@@ -15,7 +15,7 @@ export class TextMark {
     t.terms = t.text.split(/(\s+)/)
     t.html = ''
     let stopWordSet = new Set(stopwords)
-    for (let i in t.terms) {
+    for (let i = 0; i < t.terms.length; ++i) {
       let term = t.terms[i]
       let className = t.className(term)
       if (stopWordSet.has(className)) {
