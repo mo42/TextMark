@@ -10,11 +10,11 @@ itself:
 let textMark = new TextMark(textContainer, text)
 ```
 Then, one can define CSS selectors and callback functions.
-Set a CSS selector that specifies how the element is marked
+This sets a CSS selector that specifies how the element is marked:
 ```javascript
 textMark.setLeftSelector('mark')
 ```
-Set function that gets invoked on a left-click
+This sets function that gets invoked on a left-click:
 ```javascript
 textMark.leftAddCallback(somecallback)
 ```
