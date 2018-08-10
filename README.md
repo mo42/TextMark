@@ -26,7 +26,7 @@ textMark.addClass(someterm, 'mark')
 ### TextMark
 ![Demo](textmark.gif)
 ### TextMap
-![Demo](textmap.gif)
+![Demo](textmap.png)
 ## Reference
 <a name="TextMark"></a>
 
