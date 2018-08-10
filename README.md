@@ -23,7 +23,10 @@ One can mark words manually too:
 textMark.addClass(someterm, 'mark')
 ```
 ## Demo
-![Demo](demo.gif)
+### TextMark
+![Demo](textmark.gif)
+### TextMap
+![Demo](textmap.gif)
 ## Reference
 <a name="TextMark"></a>
 
