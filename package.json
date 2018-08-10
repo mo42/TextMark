@@ -1,6 +1,9 @@
 {
   "name": "textmark",
   "version": "1.0.0",
+  "dependencies": {
+    "d3": "~5.5.0"
+  },
   "description": "Dynamically highlight words in texts",
   "main": "index.js",
   "scripts": {

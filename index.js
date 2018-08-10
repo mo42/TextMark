@@ -1,3 +1,5 @@
+import * as d3 from 'd3'
+
 import {stopwords} from './stopwords.js'
 
 /**
@@ -30,8 +32,8 @@ export default class TextMark {
     t.setupSelection()
     t.leftSelector = 'leftSelector'
     t.rightSelector = 'rightSelector'
-    t.left = { add: undefined, remove: undefined }
-    t.right = { add: undefined, remove: undefined }
+    t.left = {add: undefined, remove: undefined}
+    t.right = {add: undefined, remove: undefined}
   }
 
   /**
@@ -193,7 +195,7 @@ export default class TextMark {
       if (elements.length > 0 && added && callbacks.add !== undefined) {
         callbacks.add(elements[0])
       } else if (elements.length > 0 && !added &&
-          callbacks.remove !== undefined) {
+        callbacks.remove !== undefined) {
         callbacks.remove(elements[0])
       }
     }
@@ -210,5 +212,152 @@ export default class TextMark {
     } else {
       t.element.innerHTML = t.html
     }
+  }
+}
+
+const SNIPPET = 81
+
+/**
+ * This class allows you to dynamically select words in a text. In contrast to
+ * TextMark, this class is intended for long texts. There is a visualization
+ * next to the scrollbar that highlights the occurrences in the text.
+ */
+export default class TextMap {
+
+  constructor (textSelector, mapSelector, tooltipSelector, text) {
+    let t = this
+    t.textSelector = textSelector
+    t.mapSelector = mapSelector
+    t.text = text
+    d3.select(t.textSelector).selectAll('*').remove()
+    d3.select(t.mapSelector).selectAll('*').remove()
+    t.prepareText()
+    t.prepareMap()
+    t.prepareTooltip(tooltipSelector)
+  }
+
+  /**
+   * Return an array of all positions in the string that match the given
+   * keyword.
+   * @param keyword to be highlighted
+   * @returns {Object} split text and matching positions
+   */
+  static indices (text, keyword) {
+    let re = new RegExp(keyword, 'gi')
+    let matchPositions = []
+    while (re.exec(text) !== null) {
+      matchPositions.push(re.lastIndex)
+    }
+    let splitText = text.split(re)
+    return {splitText: splitText, indices: matchPositions}
+  }
+
+  /**
+   * Prepare full text view
+   */
+  prepareText () {
+    let t = this
+    d3.select(t.textSelector)
+      .style('background-color', 'white')
+      .text(t.text)
+  }
+
+  /**
+   * Prepare map view
+   */
+  prepareMap () {
+    let t = this
+    t.mapHeight = +d3.select(t.mapSelector)
+      .style('height')
+      .slice(0, -2)
+    t.mapWidth = 17
+    t.mapScale = d3.scaleLinear()
+      .domain([0, t.text.length])
+      .range([t.mapWidth, t.mapHeight - t.mapWidth])
+    t.mapSVG = d3.select(t.mapSelector).append('svg')
+      .attr('height', t.mapHeight)
+      .attr('width', t.mapWidth)
+    t.mapSVG.append('rect')
+      .attr('class', 'background')
+      .attr('x', 0)
+      .attr('y', t.mapWidth)
+      .attr('width', t.mapWidth)
+      .attr('height', t.mapHeight - t.mapWidth)
+      .attr('fill', 'white')
+  }
+
+  prepareTooltip (tooltipSelector) {
+    let t = this
+    t.tooltipSelector = tooltipSelector
+    t.tooltip = d3.select(tooltipSelector)
+      .attr('opacity', 0)
+  }
+
+  /**
+   * Highlight all occurrences of the given keyword in the text and in the
+   * map.
+   * @param keyword to be highlighted
+   * @param color of the highlighted keyword
+   */
+  highlight (keyword, color) {
+    if (color === undefined) {
+      color = 'red'
+    }
+    let t = this
+    let split = TextMap.indices(t.text, keyword)
+    // Show highlights in the map
+    let updateSelection = t.mapSVG.selectAll('.map')
+      .data(split.indices)
+    updateSelection.exit().remove()
+    updateSelection.transition()
+      .attr('y', function (d) { return t.mapScale(d) })
+    updateSelection.enter()
+      .append('a')
+      .attr('href', function (d) { return t.textSelector + '-' + d })
+      .append('rect')
+      .attr('class', 'map')
+      .attr('x', 0)
+      .attr('y', function (d) { return t.mapScale(d) })
+      .attr('width', t.mapWidth)
+      .attr('height', 1)
+      .attr('fill', color)
+      .on('mouseover', function (d) {
+        t.tooltip.transition().duration(200)
+          .style('opacity', 0.9)
+        t.tooltip.html(t.textSnippet(d, keyword, color))
+          .style('left', (d3.event.pageX + 10) + 'px')
+          .style('top', (d3.event.pageY) + 'px')
+      }).on('mousemove', function () {
+      t.tooltip.style('top', (d3.event.pageY) + 'px')
+    }).on('mouseleave', function () {
+      t.tooltip.style('opacity', '0.0')
+    }).on('mouseleave', function () {
+      t.tooltip.style('opacity', '0.0')
+    })
+    // Highlight words in the text
+    let text = ''
+    let selector = t.textSelector.slice(1)
+    for (let i = 0; i < split.splitText.length; ++i) {
+      text += split.splitText[i] + '<span style="background-color: '
+        + color + ';" id="' + selector + '-' + split.indices[i] + '">'
+        + keyword + '</span>'
+    }
+    d3.select(t.textSelector).selectAll('div').remove()
+    d3.select(t.textSelector).html(text)
+  }
+
+  /**
+   * Return HTML code of a snippet around the given position
+   * @param position in the text
+   * @param keyword at the position
+   * @param color of the keyword in the snippet
+   * @returns {*} HTML string
+   */
+  textSnippet (position, keyword, color) {
+    let t = this
+    let snippet = t.text.slice(position - SNIPPET, position + SNIPPET)
+    let split = TextMap.indices(snippet, keyword)
+    let joinString = '<span style="background-color: ' + color + ';">' + keyword + '</span>'
+    return split.splitText.join(joinString)
   }
 }
